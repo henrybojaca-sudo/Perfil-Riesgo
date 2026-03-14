@@ -44,8 +44,8 @@ div[data-testid="stRadio"] > label {
     text-transform: uppercase;
 }
 div[data-testid="stRadio"] > div {
-    background: #131929;
-    border: 1px solid #2a3050;
+    background: #1e2a40;
+    border: 1px solid #3a4560;
     border-radius: 12px;
     padding: 0.5rem;
     gap: 4px;
@@ -58,7 +58,7 @@ div[data-testid="stRadio"] label {
     margin: 2px 0;
     transition: all 0.2s ease;
     cursor: pointer;
-    color: #c8c4bc !important;
+    color: #e8e4dc !important;
     font-size: 0.95rem !important;
     line-height: 1.4 !important;
 }
