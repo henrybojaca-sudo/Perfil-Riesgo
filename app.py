@@ -70,7 +70,12 @@ div[data-testid="stRadio"] label:hover {
 div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
     background: #c9a84c !important;
 }
-
+div[data-testid="stRadio"] label p {
+    color: #e8e4dc !important;
+}
+div[data-testid="stRadio"] label span {
+    color: #e8e4dc !important;
+}
 /* Buttons */
 .stButton > button {
     font-family: 'DM Sans', sans-serif;
