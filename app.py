@@ -516,7 +516,8 @@ def make_radar(score, profile):
     color = profile["color"]
     ax.fill(angles, vals_plot, color=color, alpha=0.2)
     ax.plot(angles, vals_plot, color=color, linewidth=2.5)
-    ax.scatter(angles[:-1], vals[:-0], s=60, color=color, zorder=5)
+    ax.scatter(angles[:-1], vals, s=60, color=color, zorder=5)
+
 
     plt.tight_layout()
     return fig
