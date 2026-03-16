@@ -375,7 +375,6 @@ def get_profile(score):
 
 
 def make_gauge(score, profile):
-    """Generate a creative gauge/speedometer chart."""
     fig = plt.figure(figsize=(10, 6), facecolor="#0b0f1a")
     ax = fig.add_subplot(111, facecolor="#0b0f1a")
     ax.set_xlim(-1.3, 1.3)
@@ -383,20 +382,15 @@ def make_gauge(score, profile):
     ax.set_aspect("equal")
     ax.axis("off")
 
-    # ── background glow ──
     for r in np.linspace(1.25, 1.0, 8):
         alpha = 0.02 * (1.35 - r)
         circle = plt.Circle((0, 0), r, color="#c9a84c", alpha=alpha, zorder=0)
         ax.add_patch(circle)
 
-    # ── arc segments (5 zones) ──
     colors = ["#4a9eff", "#38d9a9", "#f0d080", "#ff9a3c", "#ff4d6d"]
     labels = ["Conservador", "Mod-Conservador", "Moderado", "Mod-Agresivo", "Agresivo"]
     ranges = [(11, 14), (15, 24), (25, 34), (35, 44), (45, 55)]
-    total = 44  # 55-11
-
-    theta_start = 180
-    theta_end = 0
+    total = 44
 
     segment_angles = []
     for rng in ranges:
@@ -420,7 +414,6 @@ def make_gauge(score, profile):
         ax.plot(x, y, color=color, linewidth=lw, alpha=alpha,
                 solid_capstyle="butt", zorder=3)
 
-        # label
         mid_angle = np.radians(current_angle - angle_span / 2)
         lx = 1.12 * np.cos(mid_angle)
         ly = 1.12 * np.sin(mid_angle)
@@ -431,47 +424,39 @@ def make_gauge(score, profile):
 
         current_angle -= angle_span
 
-    # ── inner arc (track) ──
     theta = np.linspace(np.radians(180), np.radians(0), 120)
     ax.plot(np.cos(theta) * 0.72, np.sin(theta) * 0.72,
             color="#1e2435", linewidth=22, zorder=2)
 
-    # ── needle ──
     needle_angle = 180 - ((score - 11) / 44) * 180
     needle_rad = np.radians(needle_angle)
     nx = 0.82 * np.cos(needle_rad)
     ny = 0.82 * np.sin(needle_rad)
 
-    # shadow
     ax.annotate("", xy=(nx * 0.98, ny * 0.98), xytext=(0, -0.04),
                 arrowprops=dict(arrowstyle="->, head_width=0.04, head_length=0.04",
                                 color="#000000", lw=3, alpha=0.3))
-    # main needle
     ax.annotate("", xy=(nx, ny), xytext=(0, -0.04),
                 arrowprops=dict(arrowstyle="->, head_width=0.045, head_length=0.045",
                                 color="#ffffff", lw=2.5))
 
-    # center pin
     pin = plt.Circle((0, 0), 0.06, color="#c9a84c", zorder=10)
     pin_inner = plt.Circle((0, 0), 0.035, color="#0b0f1a", zorder=11)
     ax.add_patch(pin)
     ax.add_patch(pin_inner)
 
-    # ── score text ──
     ax.text(0, -0.22, str(score), ha="center", va="center",
             fontsize=42, fontweight="bold", color=profile["color"],
             fontfamily="DejaVu Sans", zorder=12)
     ax.text(0, -0.42, "puntos de 55", ha="center", va="center",
             fontsize=9, color="#666", fontfamily="DejaVu Sans")
 
-    # ── profile name ──
     ax.text(0, 1.22, f"{profile['emoji']}  {profile['name'].upper()}", ha="center",
             va="center", fontsize=14, fontweight="bold", color=profile["color"],
             fontfamily="DejaVu Sans",
             bbox=dict(boxstyle="round,pad=0.4", facecolor=profile["bg"],
                       edgecolor=profile["color"], alpha=0.9, linewidth=1.5))
 
-    # ── scale marks ──
     for val in [11, 20, 30, 40, 55]:
         ang = np.radians(180 - ((val - 11) / 44) * 180)
         x0, y0 = 0.88 * np.cos(ang), 0.88 * np.sin(ang)
@@ -486,13 +471,12 @@ def make_gauge(score, profile):
 
 
 def make_radar(score, profile):
-    """Creative radar/spider chart showing dimension scores."""
     dims = ["Reacción\nMercado", "Tolerancia\nRiesgo", "Horizonte\nTemporal",
             "Apalancamiento", "Experiencia"]
-    base = (score - 11) / 44  # 0-1
+    base = (score - 11) / 44
     np.random.seed(score)
     vals = np.clip(base + np.random.uniform(-0.15, 0.15, 5), 0, 1)
-    vals = vals / vals.max() * base + 0.1  # rescale
+    vals = vals / vals.max() * base + 0.1
 
     angles = np.linspace(0, 2 * np.pi, len(dims), endpoint=False).tolist()
     vals_plot = vals.tolist() + [vals[0]]
@@ -535,14 +519,14 @@ if "email_sent" not in st.session_state:
     st.session_state.email_sent = False
 
 # ─── EMAIL ───────────────────────────────────────────────────────────────────
-def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> bool:
+def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> tuple[bool, str]:
     try:
         smtp_user = st.secrets["smtp"]["sender"]
         smtp_pass = st.secrets["smtp"]["password"]
         smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com")
         smtp_port = int(st.secrets["smtp"].get("port", 587))
-    except Exception:
-        return False
+    except Exception as e:
+        return False, f"Secrets no configurados: {e}"
 
     section_rows = ""
     section_map = {}
@@ -671,9 +655,9 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
             server.starttls()
             server.login(smtp_user, smtp_pass)
             server.sendmail(smtp_user, to_email, msg.as_string())
-        return True
-    except Exception:
-        return False
+        return True, ""
+    except Exception as e:
+        return False, str(e)
 
 
 # ─── WELCOME PAGE ────────────────────────────────────────────────────────────
@@ -989,9 +973,11 @@ def page_result():
         """, unsafe_allow_html=True)
 
     # ── Envío de correo ───────────────────────────────────────────────────────
-    if not st.session_state.email_sent:
+    if st.session_state.email_sent:
+        st.success(f"📧 Resultados enviados a **{st.session_state.user_email}**")
+    else:
         with st.spinner("Enviando resultados a tu correo..."):
-            ok = send_results_email(
+            ok, err_msg = send_results_email(
                 to_email=st.session_state.user_email,
                 nombre=name_str,
                 score=score,
@@ -1001,10 +987,9 @@ def page_result():
             st.session_state.email_sent = True
             st.success(f"📧 Resultados enviados a **{st.session_state.user_email}**")
         else:
-            st.warning(
-                "⚠️ No se pudo enviar el correo. "
-                "Verifica la configuración SMTP en Secrets."
-            )
+            st.error(f"❌ No se pudo enviar el correo.\n\n**Error:** `{err_msg}`")
+            if st.button("🔄 Reintentar envío"):
+                st.rerun()
 
     st.markdown("<div style='margin-top:2rem'></div>", unsafe_allow_html=True)
     col_btn = st.columns([1, 2, 1])[1]
