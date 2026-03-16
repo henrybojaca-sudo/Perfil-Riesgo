@@ -5,6 +5,9 @@ import matplotlib.patheffects as pe
 import numpy as np
 from matplotlib.patches import FancyArrowPatch
 import math
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -434,7 +437,6 @@ def make_gauge(score, profile):
             color="#1e2435", linewidth=22, zorder=2)
 
     # ── needle ──
-    # Map score 11–55 → angle 180°–0°
     needle_angle = 180 - ((score - 11) / 44) * 180
     needle_rad = np.radians(needle_angle)
     nx = 0.82 * np.cos(needle_rad)
@@ -485,10 +487,8 @@ def make_gauge(score, profile):
 
 def make_radar(score, profile):
     """Creative radar/spider chart showing dimension scores."""
-    # Fake per-dimension scores based on total (for visual effect)
     dims = ["Reacción\nMercado", "Tolerancia\nRiesgo", "Horizonte\nTemporal",
             "Apalancamiento", "Experiencia"]
-    # Normalize score to 1-5 scale per dimension (approximate)
     base = (score - 11) / 44  # 0-1
     np.random.seed(score)
     vals = np.clip(base + np.random.uniform(-0.15, 0.15, 5), 0, 1)
@@ -501,7 +501,6 @@ def make_radar(score, profile):
     fig = plt.figure(figsize=(5, 5), facecolor="#0b0f1a")
     ax = fig.add_subplot(111, polar=True, facecolor="#0b0f1a")
 
-    # Grid styling
     ax.set_facecolor("#0d1320")
     for spine in ax.spines.values():
         spine.set_visible(False)
@@ -512,12 +511,10 @@ def make_radar(score, profile):
     ax.set_yticklabels(["", "", "", ""], size=0)
     ax.set_ylim(0, 1)
 
-    # Fill
     color = profile["color"]
     ax.fill(angles, vals_plot, color=color, alpha=0.2)
     ax.plot(angles, vals_plot, color=color, linewidth=2.5)
     ax.scatter(angles[:-1], vals, s=60, color=color, zorder=5)
-
 
     plt.tight_layout()
     return fig
@@ -532,6 +529,152 @@ if "current_q" not in st.session_state:
     st.session_state.current_q = 0
 if "name" not in st.session_state:
     st.session_state.name = ""
+if "user_email" not in st.session_state:
+    st.session_state.user_email = ""
+if "email_sent" not in st.session_state:
+    st.session_state.email_sent = False
+
+# ─── EMAIL ───────────────────────────────────────────────────────────────────
+def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> bool:
+    try:
+        smtp_user = st.secrets["smtp"]["sender"]
+        smtp_pass = st.secrets["smtp"]["password"]
+        smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com")
+        smtp_port = int(st.secrets["smtp"].get("port", 587))
+    except Exception:
+        return False
+
+    section_rows = ""
+    section_map = {}
+    for i, q in enumerate(QUESTIONS):
+        s = q["section"].split("—")[0].strip()
+        if s not in section_map:
+            section_map[s] = []
+        ans = st.session_state.answers.get(i, (0, 0))
+        section_map[s].append({
+            "text": q["text"][:70] + ("…" if len(q["text"]) > 70 else ""),
+            "answer": q["options"][ans[0]],
+            "points": ans[1],
+        })
+
+    for section, items in section_map.items():
+        section_rows += f"""
+        <tr><td colspan="2" style="padding:10px 16px 4px;font-size:11px;
+            color:#c9a84c;font-weight:700;text-transform:uppercase;
+            letter-spacing:.1em;background:#0d1117">{section}</td></tr>"""
+        for item in items:
+            section_rows += f"""
+        <tr>
+          <td style="padding:6px 16px;font-size:12px;color:#94a3b8;
+              border-bottom:1px solid #1e293b">{item['text']}<br>
+            <span style="color:#e2e8f0">→ {item['answer']}</span>
+          </td>
+          <td style="padding:6px 16px;font-size:13px;font-weight:700;
+              color:{profile['color']};text-align:right;
+              border-bottom:1px solid #1e293b">{item['points']} pts</td>
+        </tr>"""
+
+    html = f"""<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8">
+<style>
+  body{{font-family:'Segoe UI',Arial,sans-serif;background:#0b0f1a;margin:0;padding:0;}}
+  .wrap{{max-width:620px;margin:32px auto;background:#0b0f1a;border-radius:16px;
+         overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.5);
+         border:1px solid rgba(201,168,76,.2);}}
+  .header{{background:linear-gradient(135deg,#0b0f1a,#1a1f2e);
+           border-bottom:2px solid {profile['color']};padding:32px 32px 24px;text-align:center;}}
+  .header h1{{color:#c9a84c;font-size:22px;margin:0 0 6px;font-weight:800;}}
+  .header p{{color:rgba(255,255,255,.5);font-size:13px;margin:0;}}
+  .body{{padding:28px 32px;}}
+  .greeting{{color:#e2e8f0;font-size:15px;margin-bottom:24px;line-height:1.6;}}
+  .profile-box{{background:rgba(255,255,255,.04);border:2px solid {profile['color']};
+                border-radius:14px;padding:24px;margin-bottom:22px;text-align:center;}}
+  .profile-emoji{{font-size:52px;display:block;margin-bottom:10px;}}
+  .profile-label{{color:rgba(255,255,255,.45);font-size:11px;text-transform:uppercase;
+                  letter-spacing:.12em;margin-bottom:4px;}}
+  .profile-name{{color:{profile['color']};font-size:26px;font-weight:800;margin:0 0 12px;}}
+  .profile-desc{{color:#94a3b8;font-size:13px;line-height:1.75;text-align:left;}}
+  .meta-row{{display:flex;gap:8px;margin:14px 0 0;flex-wrap:wrap;justify-content:center;}}
+  .meta-pill{{background:rgba(255,255,255,.06);border-radius:20px;padding:4px 12px;
+              font-size:11px;color:#64748b;}}
+  .meta-pill span{{color:{profile['color']};font-weight:700;}}
+  .score-box{{background:rgba(255,255,255,.05);border-radius:10px;padding:18px;
+              text-align:center;margin-bottom:22px;}}
+  .score-val{{font-size:42px;font-weight:800;color:{profile['color']};}}
+  .score-lbl{{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;}}
+  .strat{{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.25);
+          border-radius:10px;padding:14px 18px;margin-bottom:22px;}}
+  .strat-title{{color:#c9a84c;font-size:11px;font-weight:700;text-transform:uppercase;
+                letter-spacing:.1em;margin-bottom:6px;}}
+  .strat-text{{color:#94a3b8;font-size:13px;line-height:1.6;}}
+  .footer{{border-top:1px solid rgba(255,255,255,.07);padding:18px 32px;
+           text-align:center;color:#334155;font-size:11px;}}
+  table{{width:100%;border-collapse:collapse;margin-bottom:22px;
+         background:#0d1117;border-radius:10px;overflow:hidden;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>📊 Tu Perfil de Riesgo del Inversionista</h1>
+    <p>Encuesta · Posgrado en Finanzas</p>
+  </div>
+  <div class="body">
+    <p class="greeting">Hola <strong style="color:#e2e8f0">{nombre}</strong>,<br>
+    completaste la <strong style="color:#c9a84c">Encuesta de Perfil de Riesgo</strong>.
+    Aquí están tus resultados:</p>
+
+    <div class="profile-box">
+      <span class="profile-emoji">{profile['emoji']}</span>
+      <div class="profile-label">Tu perfil de riesgo</div>
+      <div class="profile-name">{profile['name']}</div>
+      <p class="profile-desc">{profile['desc']}</p>
+      <div class="meta-row">
+        <div class="meta-pill">⏱ Horizonte: <span>{profile['horizon']}</span></div>
+        <div class="meta-pill">〜 Volatilidad: <span>{profile['volatility']}</span></div>
+        <div class="meta-pill">📈 Retorno esperado: <span>{profile['expected_return']}</span></div>
+      </div>
+    </div>
+
+    <div class="score-box">
+      <div class="score-val">{score}</div>
+      <div class="score-lbl">Puntaje total · de 11 a 55 puntos</div>
+    </div>
+
+    <div class="strat">
+      <div class="strat-title">📌 Estrategia de portafolio recomendada</div>
+      <div class="strat-text">{profile['strategy']}</div>
+    </div>
+
+    <table>
+      {section_rows}
+    </table>
+  </div>
+  <div class="footer">
+    Posgrado en Finanzas · Encuesta de Perfil de Riesgo &nbsp;·&nbsp;
+    Este correo fue generado automáticamente a partir de tus respuestas.
+  </div>
+</div>
+</body>
+</html>"""
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"Perfil {profile['name']} {profile['emoji']} — Encuesta de Perfil de Riesgo · Posgrado en Finanzas"
+    msg["From"]    = smtp_user
+    msg["To"]      = to_email
+    msg.attach(MIMEText(html, "html", "utf-8"))
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
+            server.ehlo()
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(smtp_user, to_email, msg.as_string())
+        return True
+    except Exception:
+        return False
+
 
 # ─── WELCOME PAGE ────────────────────────────────────────────────────────────
 def page_welcome():
@@ -601,17 +744,26 @@ def page_welcome():
     </p>
     """, unsafe_allow_html=True)
 
-    name = st.text_input("Tu nombre (opcional)", placeholder="Ej. Juan García",
-                         label_visibility="visible")
+    name = st.text_input("Nombre completo", placeholder="Ej. Juan García")
+    email = st.text_input("Correo electrónico", placeholder="Ej. juan@ejemplo.com")
 
     col_btn = st.columns([1, 2, 1])[1]
     with col_btn:
         if st.button("Comenzar encuesta →", use_container_width=True):
-            st.session_state.name = name
-            st.session_state.page = "survey"
-            st.session_state.current_q = 0
-            st.session_state.answers = {}
-            st.rerun()
+            n = name.strip()
+            e = email.strip()
+            if not n:
+                st.error("Por favor ingresa tu nombre.")
+            elif not e or "@" not in e or "." not in e.split("@")[-1]:
+                st.error("Por favor ingresa un correo válido.")
+            else:
+                st.session_state.name = n
+                st.session_state.user_email = e
+                st.session_state.page = "survey"
+                st.session_state.current_q = 0
+                st.session_state.answers = {}
+                st.session_state.email_sent = False
+                st.rerun()
 
 
 # ─── SURVEY PAGE ─────────────────────────────────────────────────────────────
@@ -621,7 +773,6 @@ def page_survey():
     total = len(QUESTIONS)
     progress = q_idx / total
 
-    # Header
     name_str = f"  ·  {st.session_state.name}" if st.session_state.name else ""
     st.markdown(f"""
     <div style="display:flex; justify-content:space-between; align-items:center;
@@ -637,11 +788,9 @@ def page_survey():
     st.progress(progress)
     st.markdown("<div style='margin-bottom:1rem'></div>", unsafe_allow_html=True)
 
-    # Section badge
     st.markdown(f'<div class="section-badge">{q["section"]}</div>',
                 unsafe_allow_html=True)
 
-    # Question number + text
     st.markdown(f"""
     <div class="q-num">{str(q_idx + 1).zfill(2)}</div>
     <div class="q-text">{q["text"]}</div>
@@ -653,10 +802,9 @@ def page_survey():
 
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
 
-    # Options
     default_idx = st.session_state.answers.get(q_idx, None)
     if default_idx is not None:
-        default_idx = default_idx[0]  # stored as (option_index, points)
+        default_idx = default_idx[0]
     else:
         default_idx = None
 
@@ -671,7 +819,6 @@ def page_survey():
 
     st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
 
-    # Navigation
     col_back, col_fwd = st.columns([1, 2])
     with col_back:
         if q_idx > 0:
@@ -701,7 +848,6 @@ def page_result():
     profile = get_profile(score)
     name_str = st.session_state.name or "Estudiante"
 
-    # Header
     st.markdown(f"""
     <div style="text-align:center; padding:1.5rem 0 0.5rem;">
         <p style="color:#666; font-size:0.75rem; text-transform:uppercase;
@@ -711,13 +857,11 @@ def page_result():
     </div>
     """, unsafe_allow_html=True)
 
-    # Gauge chart
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
     fig_gauge = make_gauge(score, profile)
     st.pyplot(fig_gauge, use_container_width=True)
     plt.close(fig_gauge)
 
-    # Profile card
     st.markdown(f"""
     <div style="background:{profile['bg']}; border:1px solid {profile['color']}44;
                 border-left: 4px solid {profile['color']}; border-radius:12px;
@@ -763,7 +907,6 @@ def page_result():
     </div>
     """, unsafe_allow_html=True)
 
-    # Strategy
     st.markdown(f"""
     <div style="background:#131929; border:1px solid #2a3050; border-radius:12px;
                 padding:1.25rem; margin:0.75rem 0;">
@@ -777,7 +920,6 @@ def page_result():
     </div>
     """, unsafe_allow_html=True)
 
-    # Radar chart
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
     st.markdown("""
     <div style="font-size:0.7rem; color:#666; text-transform:uppercase;
@@ -792,7 +934,6 @@ def page_result():
         st.pyplot(fig_radar, use_container_width=True)
         plt.close(fig_radar)
 
-    # Score breakdown
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
     with st.expander("Ver desglose de respuestas"):
         section_map = {}
@@ -822,7 +963,6 @@ def page_result():
                 """, unsafe_allow_html=True)
             st.markdown("")
 
-    # All profiles reference
     st.markdown("---")
     st.markdown("""
     <div style="font-size:0.7rem; color:#555; text-transform:uppercase;
@@ -848,7 +988,24 @@ def page_result():
         </div>
         """, unsafe_allow_html=True)
 
-    # Restart
+    # ── Envío de correo ───────────────────────────────────────────────────────
+    if not st.session_state.email_sent:
+        with st.spinner("Enviando resultados a tu correo..."):
+            ok = send_results_email(
+                to_email=st.session_state.user_email,
+                nombre=name_str,
+                score=score,
+                profile=profile,
+            )
+        if ok:
+            st.session_state.email_sent = True
+            st.success(f"📧 Resultados enviados a **{st.session_state.user_email}**")
+        else:
+            st.warning(
+                "⚠️ No se pudo enviar el correo. "
+                "Verifica la configuración SMTP en Secrets."
+            )
+
     st.markdown("<div style='margin-top:2rem'></div>", unsafe_allow_html=True)
     col_btn = st.columns([1, 2, 1])[1]
     with col_btn:
@@ -856,6 +1013,9 @@ def page_result():
             st.session_state.page = "welcome"
             st.session_state.answers = {}
             st.session_state.current_q = 0
+            st.session_state.name = ""
+            st.session_state.user_email = ""
+            st.session_state.email_sent = False
             st.rerun()
 
     st.markdown("""
