@@ -6,9 +6,7 @@ import numpy as np
 from matplotlib.patches import FancyArrowPatch
 import math
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
+from email.message import EmailMessage
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Perfil de Riesgo del Inversionista",
@@ -643,11 +641,12 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
 </body>
 </html>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Perfil {profile['name']} {profile['emoji']} — Encuesta de Perfil de Riesgo · Posgrado en Finanzas"
+    subject = f"Perfil {profile['nombre']} {profile['emoji']} - CDS Challenge | Posgrado en Finanzas"
+    msg = EmailMessage()
+    msg["Subject"] = subject
     msg["From"]    = smtp_user
     msg["To"]      = to_email
-    msg.attach(MIMEText(html, "html", "utf-8"))
+    msg.set_content(html, subtype="html", charset="utf-8")
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
