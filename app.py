@@ -654,7 +654,7 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
             server.ehlo()
             server.starttls()
             server.login(smtp_user, smtp_pass)
-            server.sendmail(smtp_user, to_email, msg.as_string())
+            server.send_message(msg)
         return True, ""
     except Exception as e:
         return False, str(e)
