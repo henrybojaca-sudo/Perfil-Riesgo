@@ -541,8 +541,8 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
         smtp_pass = st.secrets["smtp"]["password"]
         smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com")
         smtp_port = int(st.secrets["smtp"].get("port", 587))
-    except Exception:
-        return False
+    except Exception as e:
+        return False, f"Secrets no encontrados: {e}"
 
     section_rows = ""
     section_map = {}
@@ -671,9 +671,9 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
             server.starttls()
             server.login(smtp_user, smtp_pass)
             server.sendmail(smtp_user, to_email, msg.as_string())
-        return True
-    except Exception:
-        return False
+        return True, None
+    except Exception as e:
+        return False, str(e)
 
 
 # ─── WELCOME PAGE ────────────────────────────────────────────────────────────
@@ -991,7 +991,7 @@ def page_result():
     # ── Envío de correo ───────────────────────────────────────────────────────
     if not st.session_state.email_sent:
         with st.spinner("Enviando resultados a tu correo..."):
-            ok = send_results_email(
+            ok, err_msg = send_results_email(
                 to_email=st.session_state.user_email,
                 nombre=name_str,
                 score=score,
@@ -1002,8 +1002,7 @@ def page_result():
             st.success(f"📧 Resultados enviados a **{st.session_state.user_email}**")
         else:
             st.warning(
-                "⚠️ No se pudo enviar el correo. "
-                "Verifica la configuración SMTP en Secrets."
+                f"⚠️ No se pudo enviar el correo: `{err_msg}`"
             )
 
     st.markdown("<div style='margin-top:2rem'></div>", unsafe_allow_html=True)
