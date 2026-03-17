@@ -8,6 +8,7 @@ import math
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.header import Header
 
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -660,7 +661,7 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
 </html>"""
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Perfil {profile['name']} {profile['emoji']} — Encuesta de Perfil de Riesgo · Posgrado en Finanzas"
+    msg["Subject"] = Header(f"Perfil {profile['name']} {profile['emoji']} - Encuesta de Perfil de Riesgo - Posgrado en Finanzas", "utf-8")
     msg["From"]    = smtp_user
     msg["To"]      = to_email
     msg.attach(MIMEText(html, "html", "utf-8"))
