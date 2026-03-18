@@ -1092,33 +1092,27 @@ def page_result():
     st.markdown('<div class="divider-label">Escala de perfiles de riesgo</div>',
                 unsafe_allow_html=True)
 
-    scale_cols = st.columns(5, gap="small")
     total_range = 44  # 55 - 11
-    for i, (p, col) in enumerate(zip(PROFILES, scale_cols)):
+    cards_html = '<div style="display:flex; gap:0.5rem; margin-top:0.5rem;">'
+    for p in PROFILES:
         is_me = p["name"] == profile["name"]
         fill_pct = int(((p["range"][1] - p["range"][0]) / total_range) * 100)
-        border = f"border:2px solid {p['color']};" if is_me else "border:1px solid #2a3050;"
+        border = f"2px solid {p['color']}" if is_me else "1px solid #2a3050"
         bg = p["bg"] if is_me else "#0d1117"
-        you_badge = f'<div style="font-size:0.6rem; color:{p["color"]}; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem;">▶ Tú</div>' if is_me else ""
-        with col:
-            st.markdown(f"""
-            <div style="background:{bg}; {border} border-radius:10px;
-                        padding:0.85rem 0.75rem; text-align:center;">
-                <div style="font-size:1.4rem;">{p['emoji']}</div>
-                {you_badge}
-                <div style="font-size:0.78rem; font-weight:{'700' if is_me else '400'};
-                            color:{p['color']}; margin:0.3rem 0 0.2rem; line-height:1.2;">
-                    {p['name']}
-                </div>
-                <div style="font-size:0.68rem; color:#444; margin-bottom:0.5rem;">
-                    {p['range'][0]}–{p['range'][1]} pts
-                </div>
-                <div style="height:4px; background:#1e2435; border-radius:2px; overflow:hidden;">
-                    <div style="width:{fill_pct}%; height:100%; background:{p['color']};
-                                opacity:{'1' if is_me else '0.4'}; border-radius:2px;"></div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+        you_badge = f'<div style="font-size:0.6rem; color:{p["color"]}; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem;">&#9658; Tú</div>' if is_me else ""
+        fw = "700" if is_me else "400"
+        op = "1" if is_me else "0.4"
+        cards_html += f'''<div style="flex:1; background:{bg}; border:{border}; border-radius:10px; padding:0.85rem 0.75rem; text-align:center;">
+  <div style="font-size:1.4rem;">{p["emoji"]}</div>
+  {you_badge}
+  <div style="font-size:0.78rem; font-weight:{fw}; color:{p["color"]}; margin:0.3rem 0 0.2rem; line-height:1.2;">{p["name"]}</div>
+  <div style="font-size:0.68rem; color:#888; margin-bottom:0.5rem;">{p["range"][0]}&#8211;{p["range"][1]} pts</div>
+  <div style="height:4px; background:#1e2435; border-radius:2px; overflow:hidden;">
+    <div style="width:{fill_pct}%; height:100%; background:{p["color"]}; opacity:{op}; border-radius:2px;"></div>
+  </div>
+</div>'''
+    cards_html += '</div>'
+    st.markdown(cards_html, unsafe_allow_html=True)
 
     # ── Email ───────────────────────────────────────────────────────────────
     st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
