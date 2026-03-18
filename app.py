@@ -6,9 +6,8 @@ import numpy as np
 from matplotlib.patches import FancyArrowPatch
 import math
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.header import Header
+from email.message import EmailMessage
+import email.policy
 
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -677,19 +676,20 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
 </body>
 </html>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = Header(f"Perfil {profile['name']} {profile['emoji']} - Encuesta de Perfil de Riesgo - Posgrado en Finanzas", "utf-8")
+    msg = EmailMessage(policy=email.policy.SMTP)
+    msg["Subject"] = f"Perfil {profile['name']} - Encuesta de Perfil de Riesgo - Posgrado en Finanzas"
     msg["From"]    = smtp_user
     msg["To"]      = to_email
-    msg.attach(MIMEText(html, "html", "utf-8"))
+    msg.set_content(f"Tu perfil de riesgo: {profile['name']}. Puntaje: {score}.")
+    msg.add_alternative(html, subtype="html")
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
             server.ehlo()
             server.starttls()
-            server.ehlo()  # re-identificar tras TLS
+            server.ehlo()
             server.login(smtp_user, smtp_pass)
-            server.sendmail(smtp_user, [to_email], msg.as_bytes(linesep='\r\n'))
+            server.send_message(msg)
         return True, None
     except Exception as e:
         return False, str(e)
