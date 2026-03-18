@@ -549,9 +549,9 @@ def _clean(s: str) -> str:
 
 def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> bool:
     try:
-        smtp_user = st.secrets["smtp"]["sender"]
-        smtp_pass = st.secrets["smtp"]["password"]
-        smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com")
+        smtp_user = st.secrets["smtp"]["sender"].replace('\xa0', '').strip()
+        smtp_pass = st.secrets["smtp"]["password"].replace('\xa0', '').strip()
+        smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com").replace('\xa0', '').strip()
         smtp_port = int(st.secrets["smtp"].get("port", 587))
     except Exception as e:
         return False, f"Secrets no encontrados: {e}"
