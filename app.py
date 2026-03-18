@@ -6,8 +6,8 @@ import numpy as np
 from matplotlib.patches import FancyArrowPatch
 import math
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+from email.message import EmailMessage
+import email.policy
 
 # ─── PAGE CONFIG ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -535,14 +535,29 @@ if "email_sent" not in st.session_state:
     st.session_state.email_sent = False
 
 # ─── EMAIL ───────────────────────────────────────────────────────────────────
+def _clean(s: str) -> str:
+    """Reemplaza caracteres problemáticos para SMTP ASCII."""
+    return (s.replace('\xa0', ' ')   # non-breaking space
+             .replace('\u2019', "'") # comilla derecha
+             .replace('\u2018', "'") # comilla izquierda
+             .replace('\u201c', '"') # comilla doble izquierda
+             .replace('\u201d', '"') # comilla doble derecha
+             .replace('\u2013', '-') # en dash
+             .replace('\u2014', '-') # em dash
+             .strip())
+
+
 def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> bool:
     try:
-        smtp_user = st.secrets["smtp"]["sender"]
-        smtp_pass = st.secrets["smtp"]["password"]
-        smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com")
+        smtp_user = st.secrets["smtp"]["sender"].replace('\xa0', '').strip()
+        smtp_pass = st.secrets["smtp"]["password"].replace('\xa0', '').strip()
+        smtp_host = st.secrets["smtp"].get("host", "smtp.gmail.com").replace('\xa0', '').strip()
         smtp_port = int(st.secrets["smtp"].get("port", 587))
     except Exception as e:
         return False, f"Secrets no encontrados: {e}"
+
+    nombre   = _clean(nombre)
+    to_email = to_email.replace('\xa0', '').replace(' ', '').strip()
 
     section_rows = ""
     section_map = {}
@@ -551,9 +566,11 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
         if s not in section_map:
             section_map[s] = []
         ans = st.session_state.answers.get(i, (0, 0))
+        raw_text = _clean(q["text"])
+        raw_ans  = _clean(q["options"][ans[0]])
         section_map[s].append({
-            "text": q["text"][:70] + ("…" if len(q["text"]) > 70 else ""),
-            "answer": q["options"][ans[0]],
+            "text": raw_text[:70] + ("…" if len(raw_text) > 70 else ""),
+            "answer": raw_ans,
             "points": ans[1],
         })
 
@@ -659,18 +676,20 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
 </body>
 </html>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Perfil {profile['name']} {profile['emoji']} — Encuesta de Perfil de Riesgo · Posgrado en Finanzas"
+    msg = EmailMessage(policy=email.policy.SMTP)
+    msg["Subject"] = f"Perfil {profile['name']} - Encuesta de Perfil de Riesgo - Posgrado en Finanzas"
     msg["From"]    = smtp_user
     msg["To"]      = to_email
-    msg.attach(MIMEText(html, "html", "utf-8"))
+    msg.set_content(f"Tu perfil de riesgo: {profile['name']}. Puntaje: {score}.")
+    msg.add_alternative(html, subtype="html")
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
             server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(smtp_user, smtp_pass)
-            server.sendmail(smtp_user, to_email, msg.as_string())
+            server.send_message(msg)
         return True, None
     except Exception as e:
         return False, str(e)
@@ -750,8 +769,8 @@ def page_welcome():
     col_btn = st.columns([1, 2, 1])[1]
     with col_btn:
         if st.button("Comenzar encuesta →", use_container_width=True):
-            n = name.strip()
-            e = email.strip()
+            n = name.replace('\xa0', ' ').strip()
+            e = email.replace('\xa0', '').replace(' ', '').strip()
             if not n:
                 st.error("Por favor ingresa tu nombre.")
             elif not e or "@" not in e or "." not in e.split("@")[-1]:
