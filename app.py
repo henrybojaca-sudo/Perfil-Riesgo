@@ -536,6 +536,18 @@ if "email_sent" not in st.session_state:
     st.session_state.email_sent = False
 
 # ─── EMAIL ───────────────────────────────────────────────────────────────────
+def _clean(s: str) -> str:
+    """Reemplaza caracteres problemáticos para SMTP ASCII."""
+    return (s.replace('\xa0', ' ')   # non-breaking space
+             .replace('\u2019', "'") # comilla derecha
+             .replace('\u2018', "'") # comilla izquierda
+             .replace('\u201c', '"') # comilla doble izquierda
+             .replace('\u201d', '"') # comilla doble derecha
+             .replace('\u2013', '-') # en dash
+             .replace('\u2014', '-') # em dash
+             .strip())
+
+
 def send_results_email(to_email: str, nombre: str, score: int, profile: dict) -> bool:
     try:
         smtp_user = st.secrets["smtp"]["sender"]
@@ -545,6 +557,8 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
     except Exception as e:
         return False, f"Secrets no encontrados: {e}"
 
+    nombre = _clean(nombre)
+
     section_rows = ""
     section_map = {}
     for i, q in enumerate(QUESTIONS):
@@ -552,9 +566,11 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
         if s not in section_map:
             section_map[s] = []
         ans = st.session_state.answers.get(i, (0, 0))
+        raw_text = _clean(q["text"])
+        raw_ans  = _clean(q["options"][ans[0]])
         section_map[s].append({
-            "text": q["text"][:70] + ("…" if len(q["text"]) > 70 else ""),
-            "answer": q["options"][ans[0]],
+            "text": raw_text[:70] + ("…" if len(raw_text) > 70 else ""),
+            "answer": raw_ans,
             "points": ans[1],
         })
 
@@ -670,8 +686,9 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
         with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as server:
             server.ehlo()
             server.starttls()
+            server.ehlo()  # re-identificar tras TLS
             server.login(smtp_user, smtp_pass)
-            server.send_message(msg)
+            server.sendmail(smtp_user, [to_email], msg.as_bytes(linesep='\r\n'))
         return True, None
     except Exception as e:
         return False, str(e)
