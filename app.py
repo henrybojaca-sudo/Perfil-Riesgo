@@ -13,7 +13,7 @@ import email.policy
 st.set_page_config(
     page_title="Perfil de Riesgo del Inversionista",
     page_icon="📊",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed",
 )
 
@@ -29,7 +29,7 @@ html, body, [class*="css"] {
     color: #e8e6e0;
 }
 .stApp { background-color: #0b0f1a; }
-.main .block-container { padding: 2rem 1.5rem 4rem; max-width: 760px; }
+.main .block-container { padding: 2rem 2rem 4rem; max-width: 900px; margin: 0 auto; }
 
 /* Hide streamlit chrome */
 #MainMenu, footer, header { visibility: hidden; }
@@ -167,6 +167,104 @@ hr { border-color: #2a3050; }
     color: #e8e6e0;
     line-height: 1.5;
     margin-bottom: 0.25rem;
+}
+
+/* Info card */
+.info-card {
+    background: #131929;
+    border: 1px solid #2a3050;
+    border-top: 3px solid #c9a84c;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+.info-card-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+.info-card-value {
+    font-size: 0.8rem;
+    color: #c9a84c;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.2rem;
+}
+.info-card-label { font-size: 0.8rem; color: #555; }
+
+/* Metric pill */
+.metric-pill {
+    background: #0b0f1a;
+    border: 1px solid #2a3050;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+}
+.metric-pill-label {
+    font-size: 0.65rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+}
+.metric-pill-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e8e6e0;
+}
+
+/* Profile scale row */
+.scale-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #0d1117;
+    border: 1px solid #2a3050;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    margin: 0.25rem 0;
+}
+.scale-row.active {
+    border-left: 4px solid;
+}
+.scale-bar-track {
+    flex: 1;
+    height: 4px;
+    background: #1e2435;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.scale-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    opacity: 0.8;
+}
+
+/* Divider label */
+.divider-label {
+    font-size: 0.68rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-align: center;
+    margin: 1.25rem 0 0.75rem;
+}
+
+/* Input styling */
+div[data-testid="stTextInput"] input {
+    background: #131929 !important;
+    border: 1px solid #2a3050 !important;
+    border-radius: 8px !important;
+    color: #e8e6e0 !important;
+    font-family: 'DM Sans', sans-serif !important;
+    padding: 0.6rem 0.85rem !important;
+}
+div[data-testid="stTextInput"] input:focus {
+    border-color: #c9a84c !important;
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.15) !important;
+}
+div[data-testid="stTextInput"] label {
+    color: #888 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -697,77 +795,67 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
 
 # ─── WELCOME PAGE ────────────────────────────────────────────────────────────
 def page_welcome():
-    st.markdown("""
-    <div style="text-align:center; padding: 2rem 0 1rem;">
-        <div style="font-size:3rem; margin-bottom:0.5rem;">📊</div>
-        <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem;
-                   color:#e8e6e0; margin:0; line-height:1.1;">
-            Perfil de Riesgo<br>
-            <span style="color:#c9a84c;">del Inversionista</span>
-        </h1>
-        <p style="color:#666; font-size:0.8rem; letter-spacing:0.15em;
-                  text-transform:uppercase; margin-top:0.75rem;">
-            Posgrado en Finanzas
+    # Center column layout
+    _, center, _ = st.columns([1, 3, 1])
+    with center:
+        st.markdown("""
+        <div style="text-align:center; padding: 2.5rem 0 1.5rem;">
+            <div style="font-size:3.5rem; margin-bottom:0.75rem;">📊</div>
+            <h1 style="font-family:'Playfair Display',serif; font-size:2.6rem;
+                       color:#e8e6e0; margin:0; line-height:1.1;">
+                Perfil de Riesgo<br>
+                <span style="color:#c9a84c;">del Inversionista</span>
+            </h1>
+            <p style="color:#555; font-size:0.78rem; letter-spacing:0.18em;
+                      text-transform:uppercase; margin-top:0.9rem; margin-bottom:0;">
+                Posgrado en Finanzas
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Info cards
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.markdown("""
+            <div class="info-card">
+                <div class="info-card-icon">🎯</div>
+                <div class="info-card-value">11 Preguntas</div>
+                <div class="info-card-label">4 dimensiones</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with c2:
+            st.markdown("""
+            <div class="info-card">
+                <div class="info-card-icon">⏱️</div>
+                <div class="info-card-value">~5 minutos</div>
+                <div class="info-card-label">Sin límite de tiempo</div>
+            </div>
+            """, unsafe_allow_html=True)
+        with c3:
+            st.markdown("""
+            <div class="info-card">
+                <div class="info-card-icon">🏆</div>
+                <div class="info-card-value">5 Perfiles</div>
+                <div class="info-card-label">Resultado inmediato</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("""
+        <p style="color:#666; font-size:0.88rem; text-align:center;
+                  margin: 1.75rem 0 1.5rem; line-height:1.6;">
+            Responde con honestidad según tu situación actual.<br>
+            No hay respuestas correctas ni incorrectas.
         </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("""
-        <div style="text-align:center; padding:1rem;">
-            <div style="font-size:1.5rem;">🎯</div>
-            <div style="font-size:0.75rem; color:#c9a84c; font-weight:600;
-                        text-transform:uppercase; letter-spacing:0.1em; margin-top:0.5rem;">
-                11 Preguntas
-            </div>
-            <div style="font-size:0.8rem; color:#666; margin-top:0.25rem;">
-                4 dimensiones
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div style="text-align:center; padding:1rem;">
-            <div style="font-size:1.5rem;">⏱️</div>
-            <div style="font-size:0.75rem; color:#c9a84c; font-weight:600;
-                        text-transform:uppercase; letter-spacing:0.1em; margin-top:0.5rem;">
-                ~5 minutos
-            </div>
-            <div style="font-size:0.8rem; color:#666; margin-top:0.25rem;">
-                Sin límite de tiempo
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col3:
-        st.markdown("""
-        <div style="text-align:center; padding:1rem;">
-            <div style="font-size:1.5rem;">🏆</div>
-            <div style="font-size:0.75rem; color:#c9a84c; font-weight:600;
-                        text-transform:uppercase; letter-spacing:0.1em; margin-top:0.5rem;">
-                5 Perfiles
-            </div>
-            <div style="font-size:0.8rem; color:#666; margin-top:0.25rem;">
-                Resultado inmediato
-            </div>
-        </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.markdown("""
-    <p style="color:#9a9080; font-size:0.9rem; text-align:center; margin-bottom:1.5rem;">
-        Responde con honestidad según tu situación actual.<br>
-        No hay respuestas correctas ni incorrectas.
-    </p>
-    """, unsafe_allow_html=True)
+        # Form
+        fa, fb = st.columns(2)
+        with fa:
+            name = st.text_input("Nombre completo", placeholder="Ej. Juan García")
+        with fb:
+            email = st.text_input("Correo electrónico", placeholder="Ej. juan@ejemplo.com")
 
-    name = st.text_input("Nombre completo", placeholder="Ej. Juan García")
-    email = st.text_input("Correo electrónico", placeholder="Ej. juan@ejemplo.com")
-
-    col_btn = st.columns([1, 2, 1])[1]
-    with col_btn:
+        st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
         if st.button("Comenzar encuesta →", use_container_width=True):
             n = name.replace('\xa0', ' ').strip()
             e = email.replace('\xa0', '').replace(' ', '').strip()
@@ -792,73 +880,78 @@ def page_survey():
     total = len(QUESTIONS)
     progress = q_idx / total
 
-    name_str = f"  ·  {st.session_state.name}" if st.session_state.name else ""
-    st.markdown(f"""
-    <div style="display:flex; justify-content:space-between; align-items:center;
-                margin-bottom:0.75rem;">
-        <span style="font-size:0.75rem; color:#555; text-transform:uppercase;
-                     letter-spacing:0.1em;">Encuesta{name_str}</span>
-        <span style="font-size:0.75rem; color:#c9a84c; font-weight:600;">
-            {q_idx + 1} / {total}
-        </span>
-    </div>
-    """, unsafe_allow_html=True)
+    _, center, _ = st.columns([1, 3, 1])
+    with center:
+        name_str = f"  ·  {st.session_state.name}" if st.session_state.name else ""
+        st.markdown(f"""
+        <div style="display:flex; justify-content:space-between; align-items:center;
+                    margin-bottom:0.75rem;">
+            <span style="font-size:0.75rem; color:#555; text-transform:uppercase;
+                         letter-spacing:0.1em;">Encuesta{name_str}</span>
+            <span style="font-size:0.75rem; color:#c9a84c; font-weight:700;
+                         background:rgba(201,168,76,0.1); padding:0.2rem 0.7rem;
+                         border-radius:20px; border:1px solid rgba(201,168,76,0.3);">
+                {q_idx + 1} / {total}
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.progress(progress)
-    st.markdown("<div style='margin-bottom:1rem'></div>", unsafe_allow_html=True)
+        st.progress(progress)
+        st.markdown("<div style='margin-bottom:1.25rem'></div>", unsafe_allow_html=True)
 
-    st.markdown(f'<div class="section-badge">{q["section"]}</div>',
-                unsafe_allow_html=True)
+        # Question card
+        st.markdown(f"""
+        <div class="q-card">
+            <div class="section-badge">{q["section"]}</div>
+            <div class="q-num">{str(q_idx + 1).zfill(2)}</div>
+            <div class="q-text">{q["text"]}</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div class="q-num">{str(q_idx + 1).zfill(2)}</div>
-    <div class="q-text">{q["text"]}</div>
-    """, unsafe_allow_html=True)
+        if q["note"]:
+            st.markdown(f'<div class="note-box">💡 {q["note"]}</div>',
+                        unsafe_allow_html=True)
 
-    if q["note"]:
-        st.markdown(f'<div class="note-box">💡 {q["note"]}</div>',
-                    unsafe_allow_html=True)
+        st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
+        default_idx = st.session_state.answers.get(q_idx, None)
+        if default_idx is not None:
+            default_idx = default_idx[0]
+        else:
+            default_idx = None
 
-    default_idx = st.session_state.answers.get(q_idx, None)
-    if default_idx is not None:
-        default_idx = default_idx[0]
-    else:
-        default_idx = None
+        option_idx = st.radio(
+            "Selecciona una opción:",
+            options=range(len(q["options"])),
+            format_func=lambda i: q["options"][i],
+            index=default_idx,
+            key=f"radio_{q_idx}",
+            label_visibility="collapsed",
+        )
 
-    option_idx = st.radio(
-        "Selecciona una opción:",
-        options=range(len(q["options"])),
-        format_func=lambda i: q["options"][i],
-        index=default_idx,
-        key=f"radio_{q_idx}",
-        label_visibility="collapsed",
-    )
+        st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
-
-    col_back, col_fwd = st.columns([1, 2])
-    with col_back:
-        if q_idx > 0:
-            if st.button("← Anterior", use_container_width=True):
-                if option_idx is not None:
-                    st.session_state.answers[q_idx] = (option_idx, q["points"][option_idx])
-                st.session_state.current_q -= 1
-                st.rerun()
-    with col_fwd:
-        is_last = q_idx == total - 1
-        btn_label = "Ver resultado →" if is_last else "Siguiente →"
-        if st.button(btn_label, use_container_width=True):
-            if option_idx is None:
-                st.error("Por favor selecciona una opción para continuar.")
-            else:
-                st.session_state.answers[q_idx] = (option_idx, q["points"][option_idx])
-                if is_last:
-                    st.session_state.page = "result"
+        col_back, col_fwd = st.columns([1, 2])
+        with col_back:
+            if q_idx > 0:
+                if st.button("← Anterior", use_container_width=True):
+                    if option_idx is not None:
+                        st.session_state.answers[q_idx] = (option_idx, q["points"][option_idx])
+                    st.session_state.current_q -= 1
+                    st.rerun()
+        with col_fwd:
+            is_last = q_idx == total - 1
+            btn_label = "Ver resultado →" if is_last else "Siguiente →"
+            if st.button(btn_label, use_container_width=True):
+                if option_idx is None:
+                    st.error("Por favor selecciona una opción para continuar.")
                 else:
-                    st.session_state.current_q += 1
-                st.rerun()
+                    st.session_state.answers[q_idx] = (option_idx, q["points"][option_idx])
+                    if is_last:
+                        st.session_state.page = "result"
+                    else:
+                        st.session_state.current_q += 1
+                    st.rerun()
 
 
 # ─── RESULT PAGE ─────────────────────────────────────────────────────────────
@@ -867,147 +960,168 @@ def page_result():
     profile = get_profile(score)
     name_str = st.session_state.name or "Estudiante"
 
+    # Header
     st.markdown(f"""
-    <div style="text-align:center; padding:1.5rem 0 0.5rem;">
-        <p style="color:#666; font-size:0.75rem; text-transform:uppercase;
-                  letter-spacing:0.15em; margin-bottom:0.5rem;">Resultado de</p>
+    <div style="text-align:center; padding:1.5rem 0 0.75rem;">
+        <p style="color:#555; font-size:0.72rem; text-transform:uppercase;
+                  letter-spacing:0.18em; margin-bottom:0.4rem;">Resultado de</p>
         <h2 style="font-family:'Playfair Display',serif; color:#e8e6e0;
-                   font-size:1.8rem; margin:0;">{name_str}</h2>
+                   font-size:2rem; margin:0;">{name_str}</h2>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Row 1: Gauge (left) + Profile summary (right) ──────────────────────
+    col_gauge, col_profile = st.columns([3, 2], gap="large")
+
+    with col_gauge:
+        fig_gauge = make_gauge(score, profile)
+        st.pyplot(fig_gauge, use_container_width=True)
+        plt.close(fig_gauge)
+
+    with col_profile:
+        st.markdown(f"""
+        <div style="background:{profile['bg']}; border:1px solid {profile['color']}55;
+                    border-left:4px solid {profile['color']}; border-radius:14px;
+                    padding:1.5rem; height:100%; box-sizing:border-box;">
+            <div style="font-size:2.5rem; margin-bottom:0.5rem;">{profile['emoji']}</div>
+            <div style="font-size:0.68rem; color:#666; text-transform:uppercase;
+                        letter-spacing:0.12em; margin-bottom:0.2rem;">Tu perfil</div>
+            <h3 style="font-family:'Playfair Display',serif; color:{profile['color']};
+                       font-size:1.7rem; margin:0 0 1rem;">
+                {profile['name']}
+            </h3>
+            <p style="color:#b0aca4; font-size:0.88rem; line-height:1.6; margin:0;">
+                {profile['desc']}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
-    fig_gauge = make_gauge(score, profile)
-    st.pyplot(fig_gauge, use_container_width=True)
-    plt.close(fig_gauge)
 
-    st.markdown(f"""
-    <div style="background:{profile['bg']}; border:1px solid {profile['color']}44;
-                border-left: 4px solid {profile['color']}; border-radius:12px;
-                padding:1.5rem; margin:1rem 0;">
-        <div style="font-size:2rem; margin-bottom:0.5rem;">{profile['emoji']}</div>
-        <h3 style="font-family:'Playfair Display',serif; color:{profile['color']};
-                   font-size:1.6rem; margin:0 0 0.75rem;">
-            Perfil {profile['name']}
-        </h3>
-        <p style="color:#c8c4bc; font-size:0.95rem; line-height:1.6; margin-bottom:1.25rem;">
-            {profile['desc']}
-        </p>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
-            <div style="background:#0b0f1a55; border-radius:8px; padding:0.75rem;">
-                <div style="font-size:0.65rem; color:{profile['color']}; font-weight:600;
-                            text-transform:uppercase; letter-spacing:0.1em;">
-                    Horizonte
-                </div>
-                <div style="font-size:0.9rem; color:#e8e6e0; margin-top:0.25rem;">
-                    {profile['horizon']}
-                </div>
-            </div>
-            <div style="background:#0b0f1a55; border-radius:8px; padding:0.75rem;">
-                <div style="font-size:0.65rem; color:{profile['color']}; font-weight:600;
-                            text-transform:uppercase; letter-spacing:0.1em;">
-                    Volatilidad tolerable
-                </div>
-                <div style="font-size:0.9rem; color:#e8e6e0; margin-top:0.25rem;">
-                    {profile['volatility']}
-                </div>
-            </div>
-            <div style="background:#0b0f1a55; border-radius:8px; padding:0.75rem;
-                        grid-column: span 2;">
-                <div style="font-size:0.65rem; color:{profile['color']}; font-weight:600;
-                            text-transform:uppercase; letter-spacing:0.1em;">
-                    Retorno esperado
-                </div>
-                <div style="font-size:0.9rem; color:#e8e6e0; margin-top:0.25rem;">
-                    {profile['expected_return']}
-                </div>
+    # ── Row 2: 3 metric pills ───────────────────────────────────────────────
+    m1, m2, m3 = st.columns(3, gap="small")
+    with m1:
+        st.markdown(f"""
+        <div class="metric-pill" style="border-top:3px solid {profile['color']};">
+            <div class="metric-pill-label">⏱ Horizonte</div>
+            <div class="metric-pill-value" style="color:{profile['color']};">
+                {profile['horizon']}
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div style="background:#131929; border:1px solid #2a3050; border-radius:12px;
-                padding:1.25rem; margin:0.75rem 0;">
-        <div style="font-size:0.7rem; color:#c9a84c; font-weight:600;
-                    text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.5rem;">
-            📋 Estrategia sugerida
+        """, unsafe_allow_html=True)
+    with m2:
+        st.markdown(f"""
+        <div class="metric-pill" style="border-top:3px solid {profile['color']};">
+            <div class="metric-pill-label">〜 Volatilidad</div>
+            <div class="metric-pill-value" style="color:{profile['color']};">
+                {profile['volatility']}
+            </div>
         </div>
-        <p style="color:#c8c4bc; font-size:0.9rem; margin:0; line-height:1.5;">
-            {profile['strategy']}
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    with m3:
+        st.markdown(f"""
+        <div class="metric-pill" style="border-top:3px solid {profile['color']};">
+            <div class="metric-pill-label">📈 Retorno esperado</div>
+            <div class="metric-pill-value" style="color:{profile['color']};">
+                {profile['expected_return']}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
-    st.markdown("""
-    <div style="font-size:0.7rem; color:#666; text-transform:uppercase;
-                letter-spacing:0.12em; text-align:center; margin-bottom:0.5rem;">
-        Dimensiones evaluadas
-    </div>
-    """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([1, 3, 1])
-    with col2:
+    # ── Row 3: Strategy + Radar ─────────────────────────────────────────────
+    col_strat, col_radar = st.columns([3, 2], gap="large")
+
+    with col_strat:
+        st.markdown(f"""
+        <div style="background:#131929; border:1px solid #2a3050;
+                    border-top:3px solid {profile['color']}; border-radius:12px;
+                    padding:1.25rem 1.5rem;">
+            <div style="font-size:0.68rem; color:#c9a84c; font-weight:700;
+                        text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.6rem;">
+                📋 Estrategia de portafolio sugerida
+            </div>
+            <p style="color:#c8c4bc; font-size:0.92rem; margin:0; line-height:1.6;">
+                {profile['strategy']}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
+
+        # Answer breakdown
+        with st.expander("Ver desglose de respuestas"):
+            section_map = {}
+            for i, q in enumerate(QUESTIONS):
+                s = q["section"].split("—")[0].strip()
+                if s not in section_map:
+                    section_map[s] = []
+                ans = st.session_state.answers.get(i, (0, 0))
+                section_map[s].append({
+                    "q": i + 1,
+                    "text": q["text"][:60] + "…",
+                    "answer": q["options"][ans[0]],
+                    "points": ans[1],
+                })
+
+            for section, items in section_map.items():
+                st.markdown(f"**{section}**")
+                for item in items:
+                    st.markdown(f"""
+                    <div style="border-left:2px solid #2a3050; padding:0.4rem 0.75rem;
+                                margin:0.25rem 0; font-size:0.85rem; color:#888;">
+                        <span style="color:#c9a84c; font-weight:600;">P{item['q']}</span>
+                        {item['text']}<br>
+                        <span style="color:#e8e6e0;">→ {item['answer']}</span>
+                        <span style="color:#c9a84c; float:right;">{item['points']} pts</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                st.markdown("")
+
+    with col_radar:
+        st.markdown("""
+        <div class="divider-label">Dimensiones evaluadas</div>
+        """, unsafe_allow_html=True)
         fig_radar = make_radar(score, profile)
         st.pyplot(fig_radar, use_container_width=True)
         plt.close(fig_radar)
 
-    st.markdown("<div style='margin-top:1rem'></div>", unsafe_allow_html=True)
-    with st.expander("Ver desglose de respuestas"):
-        section_map = {}
-        for i, q in enumerate(QUESTIONS):
-            s = q["section"].split("—")[0].strip()
-            if s not in section_map:
-                section_map[s] = []
-            ans = st.session_state.answers.get(i, (0, 0))
-            section_map[s].append({
-                "q": i + 1,
-                "text": q["text"][:60] + "…",
-                "answer": q["options"][ans[0]],
-                "points": ans[1],
-            })
+    # ── Profiles scale ──────────────────────────────────────────────────────
+    st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
+    st.markdown('<div class="divider-label">Escala de perfiles de riesgo</div>',
+                unsafe_allow_html=True)
 
-        for section, items in section_map.items():
-            st.markdown(f"**{section}**")
-            for item in items:
-                st.markdown(f"""
-                <div style="border-left:2px solid #2a3050; padding:0.4rem 0.75rem;
-                            margin:0.25rem 0; font-size:0.85rem; color:#888;">
-                    <span style="color:#c9a84c; font-weight:600;">P{item['q']}</span>
-                    {item['text']}<br>
-                    <span style="color:#e8e6e0;">→ {item['answer']}</span>
-                    <span style="color:#c9a84c; float:right;">{item['points']} pts</span>
-                </div>
-                """, unsafe_allow_html=True)
-            st.markdown("")
-
-    st.markdown("---")
-    st.markdown("""
-    <div style="font-size:0.7rem; color:#555; text-transform:uppercase;
-                letter-spacing:0.12em; text-align:center; margin-bottom:1rem;">
-        Escala de perfiles
-    </div>
-    """, unsafe_allow_html=True)
-
-    for p in PROFILES:
+    scale_cols = st.columns(5, gap="small")
+    total_range = 44  # 55 - 11
+    for i, (p, col) in enumerate(zip(PROFILES, scale_cols)):
         is_me = p["name"] == profile["name"]
-        border_style = f"border:1px solid {p['color']}; border-left:4px solid {p['color']};" if is_me else "border:1px solid #2a3050;"
+        fill_pct = int(((p["range"][1] - p["range"][0]) / total_range) * 100)
+        border = f"border:2px solid {p['color']};" if is_me else "border:1px solid #2a3050;"
         bg = p["bg"] if is_me else "#0d1117"
-        st.markdown(f"""
-        <div style="background:{bg}; {border_style} border-radius:8px;
-                    padding:0.6rem 1rem; margin:0.3rem 0; display:flex;
-                    justify-content:space-between; align-items:center;">
-            <span style="color:{p['color']}; font-weight:{'700' if is_me else '400'};">
-                {p['emoji']} {p['name']}
-            </span>
-            <span style="color:#555; font-size:0.8rem;">
-                {p['range'][0]}–{p['range'][1]} pts
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
+        you_badge = f'<div style="font-size:0.6rem; color:{p["color"]}; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem;">▶ Tú</div>' if is_me else ""
+        with col:
+            st.markdown(f"""
+            <div style="background:{bg}; {border} border-radius:10px;
+                        padding:0.85rem 0.75rem; text-align:center;">
+                <div style="font-size:1.4rem;">{p['emoji']}</div>
+                {you_badge}
+                <div style="font-size:0.78rem; font-weight:{'700' if is_me else '400'};
+                            color:{p['color']}; margin:0.3rem 0 0.2rem; line-height:1.2;">
+                    {p['name']}
+                </div>
+                <div style="font-size:0.68rem; color:#444; margin-bottom:0.5rem;">
+                    {p['range'][0]}–{p['range'][1]} pts
+                </div>
+                <div style="height:4px; background:#1e2435; border-radius:2px; overflow:hidden;">
+                    <div style="width:{fill_pct}%; height:100%; background:{p['color']};
+                                opacity:{'1' if is_me else '0.4'}; border-radius:2px;"></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    # ── Envío de correo ───────────────────────────────────────────────────────
+    # ── Email ───────────────────────────────────────────────────────────────
+    st.markdown("<div style='margin-top:1.5rem'></div>", unsafe_allow_html=True)
     if not st.session_state.email_sent:
         with st.spinner("Enviando resultados a tu correo..."):
             ok, err_msg = send_results_email(
@@ -1020,13 +1134,11 @@ def page_result():
             st.session_state.email_sent = True
             st.success(f"📧 Resultados enviados a **{st.session_state.user_email}**")
         else:
-            st.warning(
-                f"⚠️ No se pudo enviar el correo: `{err_msg}`"
-            )
+            st.warning(f"⚠️ No se pudo enviar el correo: `{err_msg}`")
 
     st.markdown("<div style='margin-top:2rem'></div>", unsafe_allow_html=True)
-    col_btn = st.columns([1, 2, 1])[1]
-    with col_btn:
+    _, btn_col, _ = st.columns([2, 3, 2])
+    with btn_col:
         if st.button("↩ Reiniciar encuesta", use_container_width=True):
             st.session_state.page = "welcome"
             st.session_state.answers = {}
@@ -1037,7 +1149,7 @@ def page_result():
             st.rerun()
 
     st.markdown("""
-    <p style="text-align:center; color:#333; font-size:0.75rem; margin-top:1rem;">
+    <p style="text-align:center; color:#333; font-size:0.72rem; margin-top:1rem;">
         Este resultado es orientativo. Consulta con un asesor financiero profesional.
     </p>
     """, unsafe_allow_html=True)
