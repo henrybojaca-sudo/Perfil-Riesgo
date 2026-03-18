@@ -557,7 +557,8 @@ def send_results_email(to_email: str, nombre: str, score: int, profile: dict) ->
     except Exception as e:
         return False, f"Secrets no encontrados: {e}"
 
-    nombre = _clean(nombre)
+    nombre   = _clean(nombre)
+    to_email = to_email.replace('\xa0', '').replace(' ', '').strip()
 
     section_rows = ""
     section_map = {}
@@ -768,8 +769,8 @@ def page_welcome():
     col_btn = st.columns([1, 2, 1])[1]
     with col_btn:
         if st.button("Comenzar encuesta →", use_container_width=True):
-            n = name.strip()
-            e = email.strip()
+            n = name.replace('\xa0', ' ').strip()
+            e = email.replace('\xa0', '').replace(' ', '').strip()
             if not n:
                 st.error("Por favor ingresa tu nombre.")
             elif not e or "@" not in e or "." not in e.split("@")[-1]:
