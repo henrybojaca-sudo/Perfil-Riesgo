@@ -25,10 +25,10 @@ st.markdown("""
 /* Global */
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
-    background-color: #0b0f1a;
-    color: #e8e6e0;
+    background-color: #f7f5f1;
+    color: #1c1a18;
 }
-.stApp { background-color: #0b0f1a; }
+.stApp { background-color: #f7f5f1; }
 .main .block-container { padding: 2rem 2rem 4rem; max-width: 900px; margin: 0 auto; }
 
 /* Hide streamlit chrome */
@@ -36,19 +36,19 @@ html, body, [class*="css"] {
 
 /* Progress bar */
 .stProgress > div > div { background: linear-gradient(90deg, #c9a84c, #f0d080); border-radius: 4px; }
-.stProgress > div { background: #1e2435; border-radius: 4px; }
+.stProgress > div { background: #e2dfd8; border-radius: 4px; }
 
 /* Radio buttons */
 div[data-testid="stRadio"] > label {
     font-family: 'DM Sans', sans-serif;
-    color: #b0aaa0;
+    color: #6a6865;
     font-size: 0.85rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
 div[data-testid="stRadio"] > div {
-    background: #1e2a40;
-    border: 1px solid #3a4560;
+    background: #eeeae3;
+    border: 1px solid #d5d2cb;
     border-radius: 12px;
     padding: 0.5rem;
     gap: 4px;
@@ -61,23 +61,23 @@ div[data-testid="stRadio"] label {
     margin: 2px 0;
     transition: all 0.2s ease;
     cursor: pointer;
-    color: #e8e4dc !important;
+    color: #1c1a18 !important;
     font-size: 0.95rem !important;
     line-height: 1.4 !important;
 }
 div[data-testid="stRadio"] label:hover {
-    background: #1e2a40 !important;
+    background: #e2dfd8 !important;
     border-color: #c9a84c !important;
-    color: #f0d080 !important;
+    color: #8a6a10 !important;
 }
 div[data-testid="stRadio"] label[data-baseweb="radio"] input:checked + div {
     background: #c9a84c !important;
 }
 div[data-testid="stRadio"] label p {
-    color: #e8e4dc !important;
+    color: #1c1a18 !important;
 }
 div[data-testid="stRadio"] label span {
-    color: #e8e4dc !important;
+    color: #1c1a18 !important;
 }
 /* Buttons */
 .stButton > button {
@@ -94,7 +94,7 @@ div[data-testid="stRadio"] label span {
 }
 .stButton > button[kind="primary"], .stButton > button {
     background: linear-gradient(135deg, #c9a84c, #f0d080);
-    color: #0b0f1a;
+    color: #1c1a18;
 }
 .stButton > button:hover {
     background: linear-gradient(135deg, #f0d080, #c9a84c);
@@ -103,32 +103,32 @@ div[data-testid="stRadio"] label span {
 }
 
 /* Divider */
-hr { border-color: #2a3050; }
+hr { border-color: #d8d5ce; }
 
 /* Metric */
 [data-testid="metric-container"] {
-    background: #131929;
-    border: 1px solid #2a3050;
+    background: #ffffff;
+    border: 1px solid #d8d5ce;
     border-radius: 12px;
     padding: 1rem;
 }
 
 /* Note box */
 .note-box {
-    background: #131929;
+    background: #ffffff;
     border-left: 3px solid #c9a84c;
     border-radius: 0 8px 8px 0;
     padding: 0.75rem 1rem;
     margin: 0.5rem 0 1.25rem 0;
     font-size: 0.85rem;
-    color: #9a9080;
+    color: #6a6560;
     font-style: italic;
 }
 
 /* Question card */
 .q-card {
-    background: #131929;
-    border: 1px solid #2a3050;
+    background: #ffffff;
+    border: 1px solid #d8d5ce;
     border-top: 3px solid #c9a84c;
     border-radius: 0 0 12px 12px;
     padding: 1.5rem 1.75rem 1.75rem;
@@ -139,14 +139,14 @@ hr { border-color: #2a3050; }
 .section-badge {
     display: inline-block;
     background: rgba(201,168,76,0.12);
-    color: #c9a84c;
+    color: #8a6a10;
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1px solid rgba(201,168,76,0.4);
     margin-bottom: 0.75rem;
 }
 
@@ -155,7 +155,7 @@ hr { border-color: #2a3050; }
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
     font-weight: 900;
-    color: rgba(201,168,76,0.2);
+    color: rgba(201,168,76,0.25);
     line-height: 1;
     margin-bottom: 0.25rem;
 }
@@ -164,15 +164,15 @@ hr { border-color: #2a3050; }
 .q-text {
     font-size: 1.1rem;
     font-weight: 500;
-    color: #e8e6e0;
+    color: #1c1a18;
     line-height: 1.5;
     margin-bottom: 0.25rem;
 }
 
 /* Info card */
 .info-card {
-    background: #131929;
-    border: 1px solid #2a3050;
+    background: #ffffff;
+    border: 1px solid #d8d5ce;
     border-top: 3px solid #c9a84c;
     border-radius: 12px;
     padding: 1.5rem 1rem;
@@ -181,25 +181,25 @@ hr { border-color: #2a3050; }
 .info-card-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
 .info-card-value {
     font-size: 0.8rem;
-    color: #c9a84c;
+    color: #8a6a10;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0.2rem;
 }
-.info-card-label { font-size: 0.8rem; color: #555; }
+.info-card-label { font-size: 0.8rem; color: #7a7775; }
 
 /* Metric pill */
 .metric-pill {
-    background: #0b0f1a;
-    border: 1px solid #2a3050;
+    background: #ffffff;
+    border: 1px solid #d8d5ce;
     border-radius: 10px;
     padding: 0.9rem 1rem;
     text-align: center;
 }
 .metric-pill-label {
     font-size: 0.65rem;
-    color: #666;
+    color: #9a9795;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0.3rem;
@@ -207,7 +207,7 @@ hr { border-color: #2a3050; }
 .metric-pill-value {
     font-size: 1rem;
     font-weight: 600;
-    color: #e8e6e0;
+    color: #1c1a18;
 }
 
 /* Profile scale row */
@@ -215,8 +215,8 @@ hr { border-color: #2a3050; }
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background: #0d1117;
-    border: 1px solid #2a3050;
+    background: #f2f0eb;
+    border: 1px solid #d8d5ce;
     border-radius: 8px;
     padding: 0.65rem 1rem;
     margin: 0.25rem 0;
@@ -227,7 +227,7 @@ hr { border-color: #2a3050; }
 .scale-bar-track {
     flex: 1;
     height: 4px;
-    background: #1e2435;
+    background: #e2dfd8;
     border-radius: 2px;
     overflow: hidden;
 }
@@ -240,7 +240,7 @@ hr { border-color: #2a3050; }
 /* Divider label */
 .divider-label {
     font-size: 0.68rem;
-    color: #555;
+    color: #9a9795;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     text-align: center;
@@ -249,19 +249,19 @@ hr { border-color: #2a3050; }
 
 /* Input styling */
 div[data-testid="stTextInput"] input {
-    background: #131929 !important;
-    border: 1px solid #2a3050 !important;
+    background: #ffffff !important;
+    border: 1px solid #d8d5ce !important;
     border-radius: 8px !important;
-    color: #e8e6e0 !important;
+    color: #1c1a18 !important;
     font-family: 'DM Sans', sans-serif !important;
     padding: 0.6rem 0.85rem !important;
 }
 div[data-testid="stTextInput"] input:focus {
     border-color: #c9a84c !important;
-    box-shadow: 0 0 0 2px rgba(201,168,76,0.15) !important;
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.2) !important;
 }
 div[data-testid="stTextInput"] label {
-    color: #888 !important;
+    color: #7a7775 !important;
     font-size: 0.8rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
@@ -406,8 +406,8 @@ PROFILES = [
         "range": (11, 14),
         "name": "Conservador",
         "emoji": "🛡️",
-        "color": "#4a9eff",
-        "bg": "#0a1a2e",
+        "color": "#1a6fcc",
+        "bg": "#e8f2ff",
         "desc": "Prioriza la preservación del capital por encima de todo. Prefiere instrumentos de renta fija, mercado monetario y depósitos a término. Tiene muy baja tolerancia a la volatilidad y busca certeza sobre el valor de su capital.",
         "strategy": "CDTs, bonos del gobierno, fondos de mercado monetario, cuentas de ahorro de alto rendimiento.",
         "horizon": "Corto plazo (< 3 años)",
@@ -418,8 +418,8 @@ PROFILES = [
         "range": (15, 24),
         "name": "Moderado-Conservador",
         "emoji": "⚓",
-        "color": "#38d9a9",
-        "bg": "#0a2520",
+        "color": "#0e9e73",
+        "bg": "#e0f9f3",
         "desc": "Acepta un nivel limitado de riesgo a cambio de rendimientos ligeramente superiores a los del mercado monetario. Prefiere portafolios con predominancia de renta fija y una pequeña exposición a renta variable.",
         "strategy": "70-80% renta fija (bonos grado inversión, CDTs) + 20-30% renta variable diversificada (ETFs de índice).",
         "horizon": "Mediano plazo (3–5 años)",
@@ -430,8 +430,8 @@ PROFILES = [
         "range": (25, 34),
         "name": "Moderado",
         "emoji": "⚖️",
-        "color": "#f0d080",
-        "bg": "#1e1a08",
+        "color": "#8a6a10",
+        "bg": "#fdf8e0",
         "desc": "Busca un crecimiento equilibrado del capital. Tolera fluctuaciones moderadas en el corto plazo y combina renta fija con renta variable en proporciones similares. Su horizonte es de mediano a largo plazo.",
         "strategy": "50% renta fija + 50% renta variable (acciones, ETFs globales, fondos balanceados).",
         "horizon": "Mediano-largo plazo (5–10 años)",
@@ -442,8 +442,8 @@ PROFILES = [
         "range": (35, 44),
         "name": "Moderado-Agresivo",
         "emoji": "🚀",
-        "color": "#ff9a3c",
-        "bg": "#1e1208",
+        "color": "#c95f00",
+        "bg": "#fff3e0",
         "desc": "Dispuesto a asumir un riesgo considerable para obtener rendimientos superiores al mercado. Entiende y acepta la volatilidad como parte del proceso de inversión. Tiene horizonte de largo plazo.",
         "strategy": "70% renta variable (acciones individuales, ETFs temáticos, REITs) + 30% alternativos y renta fija.",
         "horizon": "Largo plazo (10–20 años)",
@@ -454,8 +454,8 @@ PROFILES = [
         "range": (45, 55),
         "name": "Agresivo",
         "emoji": "⚡",
-        "color": "#ff4d6d",
-        "bg": "#1e0810",
+        "color": "#c4003a",
+        "bg": "#ffe8ef",
         "desc": "Alta tolerancia al riesgo. Busca maximizar el retorno absoluto con plena consciencia de las pérdidas potenciales. Invierte en renta variable concentrada, alternativos sofisticados y puede usar apalancamiento.",
         "strategy": "Renta variable concentrada, derivados, private equity, venture capital, hedge funds, activos alternativos.",
         "horizon": "Largo plazo (> 20 años)",
@@ -474,8 +474,8 @@ def get_profile(score):
 
 def make_gauge(score, profile):
     """Generate a creative gauge/speedometer chart."""
-    fig = plt.figure(figsize=(10, 6), facecolor="#0b0f1a")
-    ax = fig.add_subplot(111, facecolor="#0b0f1a")
+    fig = plt.figure(figsize=(10, 6), facecolor="#f7f5f1")
+    ax = fig.add_subplot(111, facecolor="#f7f5f1")
     ax.set_xlim(-1.3, 1.3)
     ax.set_ylim(-0.6, 1.3)
     ax.set_aspect("equal")
@@ -488,7 +488,7 @@ def make_gauge(score, profile):
         ax.add_patch(circle)
 
     # ── arc segments (5 zones) ──
-    colors = ["#4a9eff", "#38d9a9", "#f0d080", "#ff9a3c", "#ff4d6d"]
+    colors = ["#1a6fcc", "#0e9e73", "#8a6a10", "#c95f00", "#c4003a"]
     labels = ["Conservador", "Mod-Conservador", "Moderado", "Mod-Agresivo", "Agresivo"]
     ranges = [(11, 14), (15, 24), (25, 34), (35, 44), (45, 55)]
     total = 44  # 55-11
@@ -523,7 +523,7 @@ def make_gauge(score, profile):
         lx = 1.12 * np.cos(mid_angle)
         ly = 1.12 * np.sin(mid_angle)
         ax.text(lx, ly, labels[i], ha="center", va="center",
-                fontsize=6.5, color=color if is_active else "#666",
+                fontsize=6.5, color=color if is_active else "#aaa9a5",
                 fontweight="bold" if is_active else "normal",
                 fontfamily="DejaVu Sans")
 
@@ -532,7 +532,7 @@ def make_gauge(score, profile):
     # ── inner arc (track) ──
     theta = np.linspace(np.radians(180), np.radians(0), 120)
     ax.plot(np.cos(theta) * 0.72, np.sin(theta) * 0.72,
-            color="#1e2435", linewidth=22, zorder=2)
+            color="#e2dfd8", linewidth=22, zorder=2)
 
     # ── needle ──
     needle_angle = 180 - ((score - 11) / 44) * 180
@@ -547,11 +547,11 @@ def make_gauge(score, profile):
     # main needle
     ax.annotate("", xy=(nx, ny), xytext=(0, -0.04),
                 arrowprops=dict(arrowstyle="->, head_width=0.045, head_length=0.045",
-                                color="#ffffff", lw=2.5))
+                                color="#1c1a18", lw=2.5))
 
     # center pin
     pin = plt.Circle((0, 0), 0.06, color="#c9a84c", zorder=10)
-    pin_inner = plt.Circle((0, 0), 0.035, color="#0b0f1a", zorder=11)
+    pin_inner = plt.Circle((0, 0), 0.035, color="#f7f5f1", zorder=11)
     ax.add_patch(pin)
     ax.add_patch(pin_inner)
 
@@ -560,7 +560,7 @@ def make_gauge(score, profile):
             fontsize=42, fontweight="bold", color=profile["color"],
             fontfamily="DejaVu Sans", zorder=12)
     ax.text(0, -0.42, "puntos de 55", ha="center", va="center",
-            fontsize=9, color="#666", fontfamily="DejaVu Sans")
+            fontsize=9, color="#9a9795", fontfamily="DejaVu Sans")
 
     # ── profile name ──
     ax.text(0, 1.22, f"{profile['emoji']}  {profile['name'].upper()}", ha="center",
@@ -574,9 +574,9 @@ def make_gauge(score, profile):
         ang = np.radians(180 - ((val - 11) / 44) * 180)
         x0, y0 = 0.88 * np.cos(ang), 0.88 * np.sin(ang)
         x1, y1 = 0.95 * np.cos(ang), 0.95 * np.sin(ang)
-        ax.plot([x0, x1], [y0, y1], color="#444", lw=1.5)
+        ax.plot([x0, x1], [y0, y1], color="#b0aea8", lw=1.5)
         ax.text(0.68 * np.cos(ang), 0.68 * np.sin(ang), str(val),
-                ha="center", va="center", fontsize=7, color="#555",
+                ha="center", va="center", fontsize=7, color="#7a7775",
                 fontfamily="DejaVu Sans")
 
     plt.tight_layout(pad=0)
@@ -596,15 +596,15 @@ def make_radar(score, profile):
     vals_plot = vals.tolist() + [vals[0]]
     angles += angles[:1]
 
-    fig = plt.figure(figsize=(5, 5), facecolor="#0b0f1a")
-    ax = fig.add_subplot(111, polar=True, facecolor="#0b0f1a")
+    fig = plt.figure(figsize=(5, 5), facecolor="#f7f5f1")
+    ax = fig.add_subplot(111, polar=True, facecolor="#f7f5f1")
 
-    ax.set_facecolor("#0d1320")
+    ax.set_facecolor("#eeeae3")
     for spine in ax.spines.values():
         spine.set_visible(False)
-    ax.grid(color="#2a3050", linestyle="-", linewidth=0.8, alpha=0.5)
+    ax.grid(color="#d8d5ce", linestyle="-", linewidth=0.8, alpha=0.7)
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(dims, size=8, color="#888", fontfamily="DejaVu Sans")
+    ax.set_xticklabels(dims, size=8, color="#4a4845", fontfamily="DejaVu Sans")
     ax.set_yticks([0.25, 0.5, 0.75, 1.0])
     ax.set_yticklabels(["", "", "", ""], size=0)
     ax.set_ylim(0, 1)
@@ -802,11 +802,11 @@ def page_welcome():
         <div style="text-align:center; padding: 2.5rem 0 1.5rem;">
             <div style="font-size:3.5rem; margin-bottom:0.75rem;">📊</div>
             <h1 style="font-family:'Playfair Display',serif; font-size:2.6rem;
-                       color:#e8e6e0; margin:0; line-height:1.1;">
+                       color:#1c1a18; margin:0; line-height:1.1;">
                 Perfil de Riesgo<br>
-                <span style="color:#c9a84c;">del Inversionista</span>
+                <span style="color:#8a6a10;">del Inversionista</span>
             </h1>
-            <p style="color:#555; font-size:0.78rem; letter-spacing:0.18em;
+            <p style="color:#9a9795; font-size:0.78rem; letter-spacing:0.18em;
                       text-transform:uppercase; margin-top:0.9rem; margin-bottom:0;">
                 Posgrado en Finanzas
             </p>
@@ -841,7 +841,7 @@ def page_welcome():
             """, unsafe_allow_html=True)
 
         st.markdown("""
-        <p style="color:#666; font-size:0.88rem; text-align:center;
+        <p style="color:#7a7775; font-size:0.88rem; text-align:center;
                   margin: 1.75rem 0 1.5rem; line-height:1.6;">
             Responde con honestidad según tu situación actual.<br>
             No hay respuestas correctas ni incorrectas.
@@ -886,11 +886,11 @@ def page_survey():
         st.markdown(f"""
         <div style="display:flex; justify-content:space-between; align-items:center;
                     margin-bottom:0.75rem;">
-            <span style="font-size:0.75rem; color:#555; text-transform:uppercase;
+            <span style="font-size:0.75rem; color:#9a9795; text-transform:uppercase;
                          letter-spacing:0.1em;">Encuesta{name_str}</span>
-            <span style="font-size:0.75rem; color:#c9a84c; font-weight:700;
-                         background:rgba(201,168,76,0.1); padding:0.2rem 0.7rem;
-                         border-radius:20px; border:1px solid rgba(201,168,76,0.3);">
+            <span style="font-size:0.75rem; color:#8a6a10; font-weight:700;
+                         background:rgba(201,168,76,0.12); padding:0.2rem 0.7rem;
+                         border-radius:20px; border:1px solid rgba(201,168,76,0.4);">
                 {q_idx + 1} / {total}
             </span>
         </div>
@@ -963,9 +963,9 @@ def page_result():
     # Header
     st.markdown(f"""
     <div style="text-align:center; padding:1.5rem 0 0.75rem;">
-        <p style="color:#555; font-size:0.72rem; text-transform:uppercase;
+        <p style="color:#9a9795; font-size:0.72rem; text-transform:uppercase;
                   letter-spacing:0.18em; margin-bottom:0.4rem;">Resultado de</p>
-        <h2 style="font-family:'Playfair Display',serif; color:#e8e6e0;
+        <h2 style="font-family:'Playfair Display',serif; color:#1c1a18;
                    font-size:2rem; margin:0;">{name_str}</h2>
     </div>
     """, unsafe_allow_html=True)
@@ -984,13 +984,13 @@ def page_result():
                     border-left:4px solid {profile['color']}; border-radius:14px;
                     padding:1.5rem; height:100%; box-sizing:border-box;">
             <div style="font-size:2.5rem; margin-bottom:0.5rem;">{profile['emoji']}</div>
-            <div style="font-size:0.68rem; color:#666; text-transform:uppercase;
+            <div style="font-size:0.68rem; color:#9a9795; text-transform:uppercase;
                         letter-spacing:0.12em; margin-bottom:0.2rem;">Tu perfil</div>
             <h3 style="font-family:'Playfair Display',serif; color:{profile['color']};
                        font-size:1.7rem; margin:0 0 1rem;">
                 {profile['name']}
             </h3>
-            <p style="color:#b0aca4; font-size:0.88rem; line-height:1.6; margin:0;">
+            <p style="color:#4a4845; font-size:0.88rem; line-height:1.6; margin:0;">
                 {profile['desc']}
             </p>
         </div>
@@ -1035,14 +1035,14 @@ def page_result():
 
     with col_strat:
         st.markdown(f"""
-        <div style="background:#131929; border:1px solid #2a3050;
+        <div style="background:#ffffff; border:1px solid #d8d5ce;
                     border-top:3px solid {profile['color']}; border-radius:12px;
                     padding:1.25rem 1.5rem;">
-            <div style="font-size:0.68rem; color:#c9a84c; font-weight:700;
+            <div style="font-size:0.68rem; color:#8a6a10; font-weight:700;
                         text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.6rem;">
                 📋 Estrategia de portafolio sugerida
             </div>
-            <p style="color:#c8c4bc; font-size:0.92rem; margin:0; line-height:1.6;">
+            <p style="color:#2a2825; font-size:0.92rem; margin:0; line-height:1.6;">
                 {profile['strategy']}
             </p>
         </div>
@@ -1069,12 +1069,12 @@ def page_result():
                 st.markdown(f"**{section}**")
                 for item in items:
                     st.markdown(f"""
-                    <div style="border-left:2px solid #2a3050; padding:0.4rem 0.75rem;
-                                margin:0.25rem 0; font-size:0.85rem; color:#888;">
-                        <span style="color:#c9a84c; font-weight:600;">P{item['q']}</span>
+                    <div style="border-left:2px solid #d8d5ce; padding:0.4rem 0.75rem;
+                                margin:0.25rem 0; font-size:0.85rem; color:#7a7775;">
+                        <span style="color:#8a6a10; font-weight:600;">P{item['q']}</span>
                         {item['text']}<br>
-                        <span style="color:#e8e6e0;">→ {item['answer']}</span>
-                        <span style="color:#c9a84c; float:right;">{item['points']} pts</span>
+                        <span style="color:#1c1a18;">→ {item['answer']}</span>
+                        <span style="color:#8a6a10; float:right;">{item['points']} pts</span>
                     </div>
                     """, unsafe_allow_html=True)
                 st.markdown("")
@@ -1097,8 +1097,8 @@ def page_result():
     for p in PROFILES:
         is_me = p["name"] == profile["name"]
         fill_pct = int(((p["range"][1] - p["range"][0]) / total_range) * 100)
-        border = f"2px solid {p['color']}" if is_me else "1px solid #2a3050"
-        bg = p["bg"] if is_me else "#0d1117"
+        border = f"2px solid {p['color']}" if is_me else "1px solid #d8d5ce"
+        bg = p["bg"] if is_me else "#f2f0eb"
         you_badge = f'<div style="font-size:0.6rem; color:{p["color"]}; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem;">&#9658; Tú</div>' if is_me else ""
         fw = "700" if is_me else "400"
         op = "1" if is_me else "0.4"
@@ -1106,8 +1106,8 @@ def page_result():
   <div style="font-size:1.4rem;">{p["emoji"]}</div>
   {you_badge}
   <div style="font-size:0.78rem; font-weight:{fw}; color:{p["color"]}; margin:0.3rem 0 0.2rem; line-height:1.2;">{p["name"]}</div>
-  <div style="font-size:0.68rem; color:#888; margin-bottom:0.5rem;">{p["range"][0]}&#8211;{p["range"][1]} pts</div>
-  <div style="height:4px; background:#1e2435; border-radius:2px; overflow:hidden;">
+  <div style="font-size:0.68rem; color:#9a9795; margin-bottom:0.5rem;">{p["range"][0]}&#8211;{p["range"][1]} pts</div>
+  <div style="height:4px; background:#e2dfd8; border-radius:2px; overflow:hidden;">
     <div style="width:{fill_pct}%; height:100%; background:{p["color"]}; opacity:{op}; border-radius:2px;"></div>
   </div>
 </div>'''
@@ -1143,7 +1143,7 @@ def page_result():
             st.rerun()
 
     st.markdown("""
-    <p style="text-align:center; color:#333; font-size:0.72rem; margin-top:1rem;">
+    <p style="text-align:center; color:#9a9795; font-size:0.72rem; margin-top:1rem;">
         Este resultado es orientativo. Consulta con un asesor financiero profesional.
     </p>
     """, unsafe_allow_html=True)
