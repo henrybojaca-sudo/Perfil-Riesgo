@@ -2,62 +2,56 @@
 
 Aplicación Streamlit para evaluar el perfil de riesgo de inversionistas, dirigida a estudiantes de posgrado en finanzas.
 
-## 🚀 Demo en vivo
-
-> Despliega en Streamlit Cloud: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+**App en vivo:** https://perfil-riesgo-jxjrb6pmb6b29skm7xuetu.streamlit.app/
 
 ---
 
 ## 📋 Características
 
-- **11 preguntas** en 4 dimensiones: reacción al mercado, tolerancia al riesgo, decisiones financieras y sofisticación financiera
-- **5 perfiles de riesgo**: Conservador → Agresivo
-- **Visualizaciones dinámicas**: velocímetro de riesgo + radar de dimensiones
-- **Desglose de respuestas** detallado
-- Diseño oscuro tipo Bloomberg Terminal
+- **18 preguntas** en 6 dimensiones: reacción al mercado, tolerancia y objetivos, apalancamiento, experiencia, capacidad financiera y psicología del inversionista
+- **5 perfiles con arquetipo**: Conservador (El Guardián) → Agresivo (El Cazador de Alfa)
+- **Velocímetro de riesgo** y **radar de 6 dimensiones** calculado con las respuestas reales
+- **Mapa disposición × capacidad**: separa las ganas de asumir riesgo de la capacidad financiera para asumirlo y alerta cuando no coinciden
+- **Portafolio modelo** por perfil con **prueba de estrés**: compara la caída posible en un año muy malo con la pérdida que el estudiante dijo tolerar
+- **Detector de sesgos**: aversión a las pérdidas, efecto disposición, FOMO, market timing, sobreconfianza, apalancamiento y concentración
+- **Consejos prácticos**: 5 por perfil + reglas de oro para todos
+- **Laboratorio de interés compuesto**: proyección en pesos de hoy para los 5 perfiles
+- **Correo automático** con el perfil, la estrategia y los consejos personalizados
 
 ## ⚙️ Instalación local
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/TU_USUARIO/encuesta-perfil-riesgo.git
-cd encuesta-perfil-riesgo
-
-# 2. Instalar dependencias
 pip install -r requirements.txt
-
-# 3. Ejecutar la app
 streamlit run app.py
 ```
 
 La app abrirá en `http://localhost:8501`
 
-## ☁️ Despliegue en Streamlit Cloud (gratuito)
+## ✉️ Envío de correo
 
-1. Sube este repositorio a GitHub (público)
-2. Ve a [share.streamlit.io](https://share.streamlit.io)
-3. Conecta tu cuenta de GitHub
-4. Selecciona el repositorio y el archivo `app.py`
-5. Haz clic en **Deploy**
+Configure en Streamlit Cloud → **Settings → Secrets**:
 
-## 📁 Estructura
-
-```
-encuesta-perfil-riesgo/
-├── app.py              # Aplicación principal
-├── requirements.txt    # Dependencias Python
-└── README.md           # Este archivo
+```toml
+[smtp]
+sender = "tu@gmail.com"
+password = "app_password_de_16_caracteres"
+host = "smtp.gmail.com"
+port = 587
 ```
 
 ## 🎯 Perfiles de Riesgo
 
-| Puntaje | Perfil | Descripción |
-|---------|--------|-------------|
-| 11–14 | 🛡️ Conservador | Preservación del capital, mínima volatilidad |
-| 15–24 | ⚓ Moderado-Conservador | Rendimientos moderados, baja volatilidad |
-| 25–34 | ⚖️ Moderado | Crecimiento equilibrado |
-| 35–44 | 🚀 Moderado-Agresivo | Alto crecimiento, alta volatilidad |
-| 45–55 | ⚡ Agresivo | Máximo retorno, máximo riesgo |
+El perfil se asigna según el puntaje normalizado (0% = todas las respuestas más conservadoras, 100% = todas las más arriesgadas). Con 18 preguntas el puntaje va de 18 a 90.
+
+| Puntaje | Perfil | Arquetipo | Caída en un año muy malo |
+|---------|--------|-----------|--------------------------|
+| 18–28 | 🛡️ Conservador | El Guardián | ≈ −3% |
+| 29–45 | ⚓ Moderado-Conservador | El Navegante | ≈ −10% |
+| 46–62 | ⚖️ Moderado | El Estratega | ≈ −20% |
+| 63–77 | 🚀 Moderado-Agresivo | El Explorador | ≈ −30% |
+| 78–90 | ⚡ Agresivo | El Cazador de Alfa | ≈ −45% |
+
+Los retornos y caídas son referencias ilustrativas con fines académicos.
 
 ---
 
